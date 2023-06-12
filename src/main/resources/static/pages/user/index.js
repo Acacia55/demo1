@@ -34,7 +34,7 @@ const fetchUserList = () => {
               <button type="button" class="btn btn-link">重置密码</button>
               <button type="button" class="btn btn-link" onclick="handleEdit('${item.id}')">编辑</button>
               <button type="button" class="btn btn-link btn-red">关闭</button>
-              <button type="button" class="btn btn-link btn-red" onclick="deleteUser('${item.id}')">删除</button>
+              <button type="button" class="btn btn-link btn-red" onclick="deleteUser('${item.username}')">删除</button>
             </td>
           </tr>
         `)
@@ -42,9 +42,9 @@ const fetchUserList = () => {
     }
   })
 }
-const deleteUser = (id) => {
+const deleteUser = (username) => {
   let params = {
-    id: id
+    username: username
   }
   $.ajax({
     url: API_BASE_URL + '/admin/deleteUserinfo',

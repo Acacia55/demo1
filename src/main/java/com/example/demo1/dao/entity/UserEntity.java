@@ -1,8 +1,9 @@
 package com.example.demo1.dao.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class UserEntity {
+public class UserEntity implements Serializable {
 
     private String id;
     private String username;
@@ -12,7 +13,7 @@ public class UserEntity {
     private String status;
     private String createdBy;
     private String creationDate;
-    private String lastUpdateBy;
+    private String lastUpdatedBy;
     private Date lastUpdateDate;
 
     public String getId() {
@@ -80,11 +81,11 @@ public class UserEntity {
     }
 
     public String getLastUpdateBy() {
-        return lastUpdateBy;
+        return lastUpdatedBy;
     }
 
     public void setLastUpdateBy(String lastUpdateBy) {
-        this.lastUpdateBy = lastUpdateBy;
+        this.lastUpdatedBy = lastUpdateBy;
     }
 
     public Date getLastUpdateDate() {
@@ -106,7 +107,7 @@ public class UserEntity {
                 ", status='" + status + '\'' +
                 ", createdBy='" + createdBy + '\'' +
                 ", creationDate='" + creationDate + '\'' +
-                ", lastUpdateBy='" + lastUpdateBy + '\'' +
+                ", lastUpdateBy='" + lastUpdatedBy + '\'' +
                 ", lastUpdateDate=" + lastUpdateDate +
                 '}';
     }

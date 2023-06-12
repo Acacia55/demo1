@@ -69,7 +69,7 @@ const onDelProject = (pid) => {
     let params = {
       id:pid
     }
-    //alert(JSON.stringify(params))
+    // alert(JSON.stringify(params))
     $.ajax({
       url: API_BASE_URL + '/deleteProjectById',
       type: "POST",
