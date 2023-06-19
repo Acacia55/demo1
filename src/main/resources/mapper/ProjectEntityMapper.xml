@@ -28,6 +28,8 @@
   <select id="queryProjectList" parameterType="com.example.demo1.dao.entity.ProjectEntity" resultMap="BaseResultMap">
     select *
     from project_info
+    where project_name LIKE CONCAT(#{projectName,jdbcType=VARCHAR},'%')
+       or id LIKE CONCAT(#{id,jdbcType=VARCHAR},'%')
   </select>
 
   <insert id="insert" parameterType="com.example.demo1.dao.entity.ProjectEntity">

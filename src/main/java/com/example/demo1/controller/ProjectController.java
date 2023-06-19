@@ -23,19 +23,19 @@ public class ProjectController {
 
         HttpResponseEntity httpResponseEntity =new HttpResponseEntity();
         try {
-            List<ProjectEntity> hasuser = projectService.queryProjectList(projectEntity);
+            List<ProjectEntity> hasproject = projectService.queryProjectList(projectEntity);
             for (ProjectEntity list:
-                 hasuser) {
+                    hasproject) {
                 System.out.println(list.toString());
             }
-            if (CollectionUtils.isEmpty(hasuser)){
+            if (CollectionUtils.isEmpty(hasproject)){
                 httpResponseEntity.setCode("0");
-                httpResponseEntity.setData(hasuser.get(0));
+                httpResponseEntity.setData(0);
                 httpResponseEntity.setMessage("没有项目信息");
             }
             else {
                 httpResponseEntity.setCode("666");
-                httpResponseEntity.setData(hasuser);
+                httpResponseEntity.setData(hasproject);
                 httpResponseEntity.setMessage("查询成功");
             }
 

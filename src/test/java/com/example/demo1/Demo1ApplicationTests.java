@@ -1,7 +1,9 @@
 package com.example.demo1;
 
 import com.example.demo1.common.util.UUIDUtil;
+import com.example.demo1.dao.ProjectEntityMapper;
 import com.example.demo1.dao.UserEntityMapper;
+import com.example.demo1.dao.entity.ProjectEntity;
 import com.example.demo1.dao.entity.UserEntity;
 
 import org.apache.ibatis.io.Resources;
@@ -13,7 +15,9 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.CollectionUtils;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 
@@ -26,7 +30,7 @@ class Demo1ApplicationTests {
 
 //    }
     Logger log = Logger.getLogger(Demo1ApplicationTests.class);
-    //@Test
+//    @Test
     public void queryUserList() throws Exception {
         String resource = "mybatis-config.xml";
         InputStream inputStream = Resources.getResourceAsStream(resource);
@@ -111,6 +115,77 @@ class Demo1ApplicationTests {
             System.out.println(i);
             // 记录info级别的信息
             log.info(">>delete用户删除测试成功");
+        }
+    }
+
+    private ProjectEntityMapper getProjectEntityMapper() {
+        String resource = "mybatis-config.xml";
+        InputStream inputStream = null;
+        try {
+            inputStream = Resources.getResourceAsStream(resource);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        ProjectEntityMapper mapper = sqlSession.getMapper(ProjectEntityMapper.class);
+        return mapper;
+    }
+
+    // 测试项目的增删改查
+    @Test
+    public void ProjectTest() throws IOException {
+        ProjectEntityMapper mapper = getProjectEntityMapper();
+// 测试queryList方法
+        List<ProjectEntity> list = mapper.queryProjectList(null);
+        if (list.isEmpty()) {
+// 记录error级别的信息
+            log.error("查询失败");
+        } else {
+            System.out.println(list);
+// 记录info级别的信息
+            log.info(">>queryProjectListTest项目列表查询测试成功");
+        }
+
+// 测试insert方法
+        ProjectEntity projectEntity = new ProjectEntity();
+        projectEntity.setId(UUIDUtil.getOneUUID());
+        projectEntity.setUserId("1e5a47c78704070b5378fd5b");
+        projectEntity.setProjectName("测试项目");
+        projectEntity.setProjectContent("测试项目内容");
+        projectEntity.setCreatedBy("admin");
+        projectEntity.setCreationDate(new Date());
+        projectEntity.setLastUpdatedBy("admin");
+        projectEntity.setLastUpdateDate(new Date());
+        int i = mapper.insert(projectEntity);
+        if (i == 0) {
+            log.error("插入失败");
+        } else {
+            System.out.println(i);
+// 记录info级别的信息
+            log.info(">>insertProjectTest项目插入测试成功");
+        }
+
+// 测试更新方法
+        projectEntity.setProjectName("测试项目更新");
+        i = mapper.updateByPrimaryKeySelective(projectEntity);
+        if (i == 0) {
+// 记录error级别的信息
+            log.error("更新失败");
+        } else {
+            System.out.println(i);
+// 记录info级别的信息
+            log.info(">>updateByPrimaryKeySelectiveProjectTest项目更新测试成功");
+        }
+
+// 测试删除方法
+        i = mapper.deleteProjectById(projectEntity);
+        if (i == 0) {
+            log.error("删除失败");
+        } else {
+            System.out.println(i);
+// 记录info级别的信息
+            log.info(">>deleteProjectByIdTest项目删除测试成功");
         }
     }
 
