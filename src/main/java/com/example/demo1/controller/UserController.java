@@ -98,7 +98,7 @@ public class UserController {
     }
 
     //    修改
-    @RequestMapping(value = "/modifyUser",method = RequestMethod.POST,headers = "Accept=application/json")
+    @RequestMapping(value = "/modifyUserInfo",method = RequestMethod.POST,headers = "Accept=application/json")
     public HttpResponseEntity modifyUser (@RequestBody UserEntity userEntity){
         HttpResponseEntity httpResponseEntity = new HttpResponseEntity();
         try {

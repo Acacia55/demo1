@@ -69,6 +69,22 @@ public class ProjectControllerTest {
                                      .andReturn();
         int status = mvcResult.getResponse().getStatus();
         Assert.assertEquals(200, status);
+
+        ProjectEntity projectEntity2 = new ProjectEntity();
+        projectEntity2.setId("1");
+        projectEntity2.setUserId("12");
+        projectEntity2.setProjectName("测试项目");
+        projectEntity2.setProjectContent("测试项目内容");
+        projectEntity2.setCreatedBy("admin");
+        projectEntity2.setLastUpdatedBy("admin");
+        MvcResult mvcResult1 = mockMvc.perform(MockMvcRequestBuilders.post("/addProjectInfo")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(JSON.toJSONString(projectEntity2))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        int status2 = mvcResult1.getResponse().getStatus();
+        Assert.assertEquals(200, status2);
     }
 
     @Test
@@ -83,6 +99,17 @@ public class ProjectControllerTest {
                 .andReturn();
         int status = mvcResult.getResponse().getStatus();
         Assert.assertEquals(200, status);
+
+        ProjectEntity projectEntity2 = new ProjectEntity();
+        projectEntity2.setId("1");
+        MvcResult mvcResult1 = mockMvc.perform(MockMvcRequestBuilders.post("/deleteProjectById")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(JSON.toJSONString(projectEntity2))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        int status1 = mvcResult1.getResponse().getStatus();
+        Assert.assertEquals(200, status1);
     }
 
     @Test
@@ -102,5 +129,21 @@ public class ProjectControllerTest {
                 .andReturn();
         int status = mvcResult.getResponse().getStatus();
         Assert.assertEquals(200, status);
+
+        ProjectEntity projectEntity2 = new ProjectEntity();
+        projectEntity2.setId("093db16736144b6a82409508719f65f5");
+        projectEntity2.setUserId("1234");
+        projectEntity2.setProjectName("第一个项目");
+        projectEntity2.setProjectContent("第一个项目描述2");
+        projectEntity2.setCreatedBy("admin");
+        projectEntity2.setLastUpdatedBy("admin");
+        MvcResult mvcResult2 = mockMvc.perform(MockMvcRequestBuilders.post("/modifyProjectInfo")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(JSON.toJSONString(projectEntity2))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+        int status2 = mvcResult2.getResponse().getStatus();
+        Assert.assertEquals(200, status2);
     }
 }
