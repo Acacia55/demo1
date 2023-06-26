@@ -7,7 +7,7 @@ public class QuestionnaireEntity implements Serializable {
 
     private String id;
 
-    private String projectId;
+    private String projectName;
 
 //    老师还是学生？
     private String answertype;
@@ -32,12 +32,12 @@ public class QuestionnaireEntity implements Serializable {
         this.id = id;
     }
 
-    public String getProjectId() {
-        return projectId;
+    public String getProjectName() {
+        return projectName;
     }
 
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
     public String getAnswertype() {
@@ -84,7 +84,7 @@ public class QuestionnaireEntity implements Serializable {
     public String toString() {
         return "QuestionnaireEntity{" +
                 "id='" + id + '\'' +
-                ", projectid='" + projectId + '\'' +
+                ", projectid='" + projectName + '\'' +
                 ", answertype='" + answertype + '\'' +
                 ", questionnaireName='" + questionnaireName + '\'' +
                 ", content='" + content + '\'' +

@@ -3,12 +3,16 @@ package com.example.demo1.controller;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.example.demo1.beans.HttpResponseEntity;
-import com.example.demo1.dao.entity.QuestionEntity;
-import com.example.demo1.dao.entity.QuestionnaireEntity;
+import com.example.demo1.dao.entity.*;
+import com.example.demo1.service.OptionService;
 import com.example.demo1.service.QuestionService;
 import com.example.demo1.service.QuestionnaireService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("http://localhost:8085")
@@ -18,28 +22,51 @@ public class QuestionnaireController {
     private QuestionnaireService questionnaireService;
     @Autowired
     private QuestionService questionService;
+    @Autowired
+    private OptionService optionService;
 
     @RequestMapping(value = "/modifyQuestionnaire",method = RequestMethod.POST,headers = "Accept=application/json")
-    public HttpResponseEntity addQuestionnaire (@RequestBody String json){
+    public HttpResponseEntity addQuestionnaire (@RequestBody QuestionsAndOptionsEntity questionsAndOptionsEntity){
         HttpResponseEntity httpResponseEntity = new HttpResponseEntity();
         try {
 
-            JSONObject jsonObject = JSON.parseObject(json);
+            int questionresult = 0;
+            int optionresult = 0;
 
-            // 在转成不同的实体类
-            QuestionnaireEntity questionnaireEntity = jsonObject.getObject("questionnaire", QuestionnaireEntity.class);
+            List<QuestionEntity> questionEntityList = questionsAndOptionsEntity.getQuestionEntityList();
 
-            System.out.println(questionnaireEntity.getProjectId());
+            List<OptionEntity> optionEntityList = questionsAndOptionsEntity.getOptionEntityList();
 
-            QuestionEntity questionEntity = jsonObject.getObject("question", QuestionEntity.class);
+            List<QuestionEntity> tempquestionlist = null;
 
-            int result = questionnaireService.addQuestionnaire(questionnaireEntity);
+            for (int i = 0; i<questionEntityList.size(); i++) {
+                if (questionEntityList.get(i) != null) {
+                    tempquestionlist.add(questionEntityList.get(i));
+                }
+            }
 
-            int resultQuestion = questionService.addQuestion(questionEntity);
+            for (int i = 0;i<questionEntityList.size();i++)
+            {
+                questionresult = questionService.addQuestion(questionEntityList.get(i));
 
-            if (result!=0 && resultQuestion !=0){
+                System.out.println(questionEntityList.get(i).getQuestionId());
+
+                for (int j = 0;j<optionEntityList.size(); j++) {
+                    if (optionEntityList.get(j).getQuestionid()
+                            == tempquestionlist.get(i).getQuestionId()){
+
+                        optionEntityList.get(j).setQuestionid(questionEntityList.get(i).getQuestionId());
+
+                        optionresult = optionService.addOptions(questionsAndOptionsEntity.getOptionEntityList().get(j));
+
+                    }
+                }
+            }
+
+            if (questionresult !=0 && optionresult !=0){
                 httpResponseEntity.setCode("666");
-                httpResponseEntity.setData(result);
+//                1代表创建成功
+                httpResponseEntity.setData(1);
                 httpResponseEntity.setMessage("创建问卷第一阶段成功");
             }
             else {
@@ -54,5 +81,107 @@ public class QuestionnaireController {
         }
         return httpResponseEntity;
     }
+
+
+
+
+    @RequestMapping(value = "/insertQuestionnaire",method = RequestMethod.POST,headers = "Accept=application/json")
+    public HttpResponseEntity insertQuestionnaire (@RequestBody QuestionnaireEntity questionnaireEntity, @RequestBody OptionEntity optionEntity){
+        HttpResponseEntity httpResponseEntity = new HttpResponseEntity();
+        try {
+
+            int result = questionnaireService.addQuestionnaire(questionnaireEntity);
+
+            System.out.println(result);
+
+            if (result!=0){
+                httpResponseEntity.setCode("666");
+                httpResponseEntity.setData(questionnaireEntity);
+                httpResponseEntity.setMessage("创建问卷信息成功");
+            }
+            else {
+                httpResponseEntity.setCode("0");
+                httpResponseEntity.setData(0);
+                httpResponseEntity.setMessage("创建问卷信息失败");
+            }
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return httpResponseEntity;
+    }
+
+
+
+    @RequestMapping(value = "/queryQuestionnaireList",method = RequestMethod.POST,headers = "Accept=application/json")
+    public HttpResponseEntity queryQuestionnaireList(@RequestBody ProjectEntity projectEntity){
+
+        HttpResponseEntity httpResponseEntity =new HttpResponseEntity();
+        try {
+            List<Map<String, Object>> questionnaireEntityList = questionnaireService.queryQuestionnaireList(projectEntity);
+
+
+
+            for (Map<String, Object> list:
+                    questionnaireEntityList) {
+                System.out.println(list.toString());
+            }
+            if (CollectionUtils.isEmpty(questionnaireEntityList)){
+                httpResponseEntity.setCode("0");
+                httpResponseEntity.setData(0);
+                httpResponseEntity.setMessage("没有项目信息");
+            }
+            else {
+                httpResponseEntity.setCode("666");
+                httpResponseEntity.setData(questionnaireEntityList);
+                httpResponseEntity.setMessage("查询成功");
+            }
+
+        }catch (Exception e){
+
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+
+        }
+        return httpResponseEntity;
+    }
+
+
+
+    @RequestMapping(value = "/seeQuestionnaire",method = RequestMethod.POST,headers = "Accept=application/json")
+    public HttpResponseEntity seeQuestionnaire(@RequestBody QuestionnaireEntity questionnaireEntity){
+
+        HttpResponseEntity httpResponseEntity =new HttpResponseEntity();
+        try {
+            List<Map<String, Object>> questionnaire = questionnaireService.seeQuestionnaire(questionnaireEntity);
+
+            for (Map<String, Object> list:
+                    questionnaire) {
+                System.out.println(list.toString());
+            }
+
+            if (CollectionUtils.isEmpty(questionnaire)){
+                httpResponseEntity.setCode("0");
+                httpResponseEntity.setData(0);
+                httpResponseEntity.setMessage("没有项目信息");
+            }
+            else {
+                httpResponseEntity.setCode("666");
+                httpResponseEntity.setData(questionnaire);
+                httpResponseEntity.setMessage("查询成功");
+            }
+
+        }catch (Exception e){
+
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+
+        }
+        return httpResponseEntity;
+    }
+
+
+
 
 }
