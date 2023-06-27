@@ -103,8 +103,6 @@ public class QuestionnaireController {
     }
 
 
-
-
     @RequestMapping(value = "/insertQuestionnaire",method = RequestMethod.POST,headers = "Accept=application/json")
     public HttpResponseEntity insertQuestionnaire (@RequestBody QuestionnaireEntity questionnaireEntity){
         HttpResponseEntity httpResponseEntity = new HttpResponseEntity();
@@ -142,20 +140,20 @@ public class QuestionnaireController {
             List<Map<String, Object>> questionnaireEntityList = questionnaireService.queryQuestionnaireList(projectEntity);
 
 
+//            for (Map<String, Object> list:
+//                    questionnaireEntityList) {
+//                System.out.println(list.toString());
+//            }
 
-            for (Map<String, Object> list:
-                    questionnaireEntityList) {
-                System.out.println(list.toString());
-            }
             if (CollectionUtils.isEmpty(questionnaireEntityList)){
                 httpResponseEntity.setCode("0");
                 httpResponseEntity.setData(0);
-                httpResponseEntity.setMessage("没有项目信息");
+                httpResponseEntity.setMessage("没有问卷信息");
             }
             else {
                 httpResponseEntity.setCode("666");
                 httpResponseEntity.setData(questionnaireEntityList);
-                httpResponseEntity.setMessage("查询成功");
+                httpResponseEntity.setMessage("当前问卷查询成功");
             }
 
         }catch (Exception e){
@@ -174,14 +172,14 @@ public class QuestionnaireController {
 
         HttpResponseEntity httpResponseEntity =new HttpResponseEntity();
         try {
-            List<Map<String, Object>> questionnaire = questionnaireService.seeQuestionnaire(questionnaireEntity);
+            OptionsAndAnswersEntity questionnaire = questionnaireService.seeQuestionnaire(questionnaireEntity);
 
-            for (Map<String, Object> list:
-                    questionnaire) {
-                System.out.println(list.toString());
-            }
+//            for (Map<String, Object> list:
+//                    questionnaire) {
+//                System.out.println(list.toString());
+//            }
 
-            if (CollectionUtils.isEmpty(questionnaire)){
+            if (questionnaire == null){
                 httpResponseEntity.setCode("0");
                 httpResponseEntity.setData(0);
                 httpResponseEntity.setMessage("没有项目信息");
