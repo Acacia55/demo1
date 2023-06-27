@@ -34,14 +34,12 @@ public class QuestionnaireService {
         return questionnaireEntityMapper.queryQuestionnaireList(projectEntity);
     }
 
-    public OptionsAndAnswersEntity seeQuestionnaire(QuestionnaireEntity questionnaireEntity){
-
-        return questionnaireEntityMapper.seeQuestionnaire(questionnaireEntity);
-    }
 
     public QuestionnaireEntity queryQuestionnaireById(String questionnaireId){
         return questionnaireEntityMapper.queryQuestionnaireById(questionnaireId);
     }
 
-
+    public List<QuestionnaireEntity> queryQuestionnaireByProjectName(String projectName){
+        return questionnaireEntityMapper.queryQuestionnaireByProjectName(projectName);
+    }
 }

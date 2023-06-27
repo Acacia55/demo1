@@ -170,51 +170,16 @@ public class QuestionnaireController {
         return httpResponseEntity;
     }
 
-
-
-    @RequestMapping(value = "/seeQuestionnaire",method = RequestMethod.POST,headers = "Accept=application/json")
-    public HttpResponseEntity seeQuestionnaire(@RequestBody QuestionnaireEntity questionnaireEntity){
-
-        HttpResponseEntity httpResponseEntity =new HttpResponseEntity();
-        try {
-            OptionsAndAnswersEntity questionnaire = questionnaireService.seeQuestionnaire(questionnaireEntity);
-
-//            for (Map<String, Object> list:
-//                    questionnaire) {
-//                System.out.println(list.toString());
-//            }
-
-            if (questionnaire == null){
-                httpResponseEntity.setCode("0");
-                httpResponseEntity.setData(0);
-                httpResponseEntity.setMessage("没有项目信息");
-            }
-            else {
-                httpResponseEntity.setCode("666");
-                httpResponseEntity.setData(questionnaire);
-                httpResponseEntity.setMessage("查询成功");
-            }
-
-        }catch (Exception e){
-
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-
-        }
-        return httpResponseEntity;
-    }
-
     /**
      *
-     * @param info:包含两个信息，questionnaireId（问卷id）和flag（是否需要答案）
-     * @return
+     * @param info:包含两个信息，questionnaireId（问卷id）和answerName（答卷人姓名）
      */
     @PostMapping("/query")
     public HttpResponseEntity getQuestionnaire(@RequestBody Map<String, String> info) {
         HttpResponseEntity httpResponseEntity = new HttpResponseEntity();
-        // 首先获取questionnaireId和flag
+        // 首先获取questionnaireId和answerName
         String questionnaireId = info.get("questionnaireId");
-        String flag = info.get("flag");
+        String answerName = info.get("answerName");
 
         // 创建返回对象实体类
         Questionnaire responseEntity = new Questionnaire();
@@ -234,14 +199,16 @@ public class QuestionnaireController {
             responseEntity.getProblems().add(problem);
         });
 
-        if (flag.equals("1")) {
+        if (!answerName.equals("")) {
             // 根据questionnaireId获取答案列表
             List<Problem> problems = responseEntity.getProblems();
             problems.forEach(problem -> {
                 List<AnswerEntity> answers = problem.getAnswers();
                 problem.getOptions().forEach(optionEntity -> {
-                    AnswerEntity answerEntity = answerService.selectByPrimaryKey(optionEntity.getId());
-                    System.out.println(answerEntity);
+                    AnswerEntity answerEntity = new AnswerEntity();
+                    answerEntity.setOptionid(optionEntity.getId());
+                    answerEntity.setUsername(answerName);
+                    answerEntity = answerService.selectByPrimaryKey(answerEntity);
                     if (answerEntity != null) {
                         answers.add(answerEntity);
                     }
@@ -258,5 +225,43 @@ public class QuestionnaireController {
         return httpResponseEntity;
     }
 
+    @PostMapping("/queryQuestionnaires")
+    public HttpResponseEntity queryQuestionnaireList(@RequestBody Map<String, String> info) {
+        HttpResponseEntity httpResponseEntity = new HttpResponseEntity();
+        String projectName = info.get("projectName");
+        List<QuestionnaireEntity> questionnaireEntityList = questionnaireService.queryQuestionnaireByProjectName(projectName);
+        if (questionnaireEntityList == null || questionnaireEntityList.size() == 0) {
+            httpResponseEntity.setCode("0");
+            httpResponseEntity.setMessage("没有问卷信息");
+        }else {
+            httpResponseEntity.setCode("200");
+            httpResponseEntity.setData(questionnaireEntityList);
+            httpResponseEntity.setMessage("问卷查询成功");
+        }
+        return httpResponseEntity;
+    }
+
+    @RequestMapping(value = "/addAnswers",method = RequestMethod.POST,headers = "Accept=application/json")
+    public HttpResponseEntity addAnswers(@RequestBody List<AnswerEntity> answerEntityList){
+
+        HttpResponseEntity httpResponseEntity =new HttpResponseEntity();
+        int addresult=0;
+
+        for (AnswerEntity answerEntity : answerEntityList) {
+            addresult = answerService.insert(answerEntity);
+        }
+
+        if (addresult == 0){
+            httpResponseEntity.setCode("0");
+            httpResponseEntity.setData(0);
+            httpResponseEntity.setMessage("添加答案失败");
+        }
+        else {
+            httpResponseEntity.setCode("666");
+            httpResponseEntity.setData(addresult);
+            httpResponseEntity.setMessage("添加答案成功");
+        }
+        return httpResponseEntity;
+    }
 
 }

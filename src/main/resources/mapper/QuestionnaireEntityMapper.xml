@@ -18,7 +18,8 @@
     SELECT
         qn.questionnaireName,
         an.username,
-        an.answertime
+        an.answertime,
+        qn.id
     FROM
         project_info pj,
         questionnaire qn,
@@ -61,5 +62,14 @@
             questionnaire
         WHERE
             id=#{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="queryQuestionnaireByProjectName" resultType="com.example.demo1.dao.entity.QuestionnaireEntity" >
+        SELECT
+            *
+        FROM
+            questionnaire
+        WHERE
+            projectName=#{projectName,jdbcType=VARCHAR}
     </select>
 </mapper>
