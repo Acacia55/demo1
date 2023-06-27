@@ -4,6 +4,9 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.example.demo1.beans.HttpResponseEntity;
 import com.example.demo1.dao.entity.*;
+import com.example.demo1.dao.entity.responseEntity.Problem;
+import com.example.demo1.dao.entity.responseEntity.Questionnaire;
+import com.example.demo1.service.AnswerService;
 import com.example.demo1.service.OptionService;
 import com.example.demo1.service.QuestionService;
 import com.example.demo1.service.QuestionnaireService;
@@ -25,6 +28,8 @@ public class QuestionnaireController {
     private QuestionService questionService;
     @Autowired
     private OptionService optionService;
+    @Autowired
+    private AnswerService answerService;
 
     @RequestMapping(value = "/modifyQuestionnaire",method = RequestMethod.POST,headers = "Accept=application/json")
     public HttpResponseEntity addQuestionnaire (@RequestBody QuestionsAndOptionsEntity questionsAndOptionsEntity){
@@ -199,7 +204,59 @@ public class QuestionnaireController {
         return httpResponseEntity;
     }
 
+    /**
+     *
+     * @param info:包含两个信息，questionnaireId（问卷id）和flag（是否需要答案）
+     * @return
+     */
+    @PostMapping("/query")
+    public HttpResponseEntity getQuestionnaire(@RequestBody Map<String, String> info) {
+        HttpResponseEntity httpResponseEntity = new HttpResponseEntity();
+        // 首先获取questionnaireId和flag
+        String questionnaireId = info.get("questionnaireId");
+        String flag = info.get("flag");
 
+        // 创建返回对象实体类
+        Questionnaire responseEntity = new Questionnaire();
+        // 根据questionnaireId获取问卷信息
+        QuestionnaireEntity questionnaireEntity = questionnaireService.queryQuestionnaireById(questionnaireId);
+        responseEntity.setQuestionnaireEntity(questionnaireEntity);
+
+        // 根据questionnaireId获取问题列表
+        List<QuestionEntity> questionEntityList = questionService.getQuestionByQuestionnaireId(questionnaireId);
+        questionEntityList.forEach(questionEntity -> {
+            // 根据questionId获取选项列表
+            List<OptionEntity> options = optionService.getOptionByQuestionId(questionEntity.getQuestionId());
+            // 封装成problem插入responseEntity
+            Problem problem = new Problem();
+            problem.setQuestionEntity(questionEntity);
+            problem.setOptions(options);
+            responseEntity.getProblems().add(problem);
+        });
+
+        if (flag.equals("1")) {
+            // 根据questionnaireId获取答案列表
+            List<Problem> problems = responseEntity.getProblems();
+            problems.forEach(problem -> {
+                List<AnswerEntity> answers = problem.getAnswers();
+                problem.getOptions().forEach(optionEntity -> {
+                    AnswerEntity answerEntity = answerService.selectByPrimaryKey(optionEntity.getId());
+                    System.out.println(answerEntity);
+                    if (answerEntity != null) {
+                        answers.add(answerEntity);
+                    }
+                });
+            });
+            // 告诉前端返回了答案
+            httpResponseEntity.setCode("201");
+        }else {
+            // 不返回答案
+            httpResponseEntity.setCode("200");
+        }
+        httpResponseEntity.setData(responseEntity);
+        httpResponseEntity.setMessage("问卷查询成功");
+        return httpResponseEntity;
+    }
 
 
 }

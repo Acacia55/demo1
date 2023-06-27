@@ -39,5 +39,9 @@ public class QuestionnaireService {
         return questionnaireEntityMapper.seeQuestionnaire(questionnaireEntity);
     }
 
+    public QuestionnaireEntity queryQuestionnaireById(String questionnaireId){
+        return questionnaireEntityMapper.queryQuestionnaireById(questionnaireId);
+    }
+
 
 }

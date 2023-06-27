@@ -31,6 +31,7 @@
     AND qs.questionnaireId=qn.id
     AND op.questionid=qs.questionId
     AND an.optionid=op.id
+    GROUP BY an.answertime;
   </select>
 
     <select id="seeQuestionnaire" resultType="com.example.demo1.dao.entity.QuestionsAndOptionsEntity">
@@ -53,4 +54,12 @@
         AND an.optionid=op.id
     </select>
 
+    <select id="queryQuestionnaireById" resultType="com.example.demo1.dao.entity.QuestionnaireEntity">
+        SELECT
+            *
+        FROM
+            questionnaire
+        WHERE
+            id=#{id,jdbcType=VARCHAR}
+    </select>
 </mapper>

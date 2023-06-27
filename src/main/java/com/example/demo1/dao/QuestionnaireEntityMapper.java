@@ -18,4 +18,5 @@ public interface QuestionnaireEntityMapper {
     List<Map<String,Object>> queryQuestionnaireList(ProjectEntity projectEntity);
     OptionsAndAnswersEntity seeQuestionnaire(QuestionnaireEntity questionnaireEntity);
 
+    QuestionnaireEntity queryQuestionnaireById(String questionnaireId);
 }
