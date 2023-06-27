@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,30 +31,49 @@ public class QuestionnaireController {
         HttpResponseEntity httpResponseEntity = new HttpResponseEntity();
         try {
 
+            System.out.println(questionsAndOptionsEntity.toString());
+
             int questionresult = 0;
             int optionresult = 0;
 
             List<QuestionEntity> questionEntityList = questionsAndOptionsEntity.getQuestionEntityList();
 
+            for (QuestionEntity question:
+                 questionEntityList) {
+                System.out.println(question.toString());
+            }
+
             List<OptionEntity> optionEntityList = questionsAndOptionsEntity.getOptionEntityList();
 
-            List<QuestionEntity> tempquestionlist = null;
+            System.out.println(optionEntityList.size());
+
+            List<QuestionEntity> tempquestionlist = new ArrayList<>();
 
             for (int i = 0; i<questionEntityList.size(); i++) {
                 if (questionEntityList.get(i) != null) {
-                    tempquestionlist.add(questionEntityList.get(i));
+                    QuestionEntity questionEntity = new QuestionEntity();
+
+                    questionEntity.setQuestionId(questionEntityList.get(i).getQuestionId());
+                    questionEntity.setQuestionnaireId(questionEntityList.get(i).getQuestionnaireId());
+                    questionEntity.setQuestionType(questionEntityList.get(i).getQuestionType());
+                    questionEntity.setQuestionTypeName(questionEntityList.get(i).getQuestionTypeName());
+
+                    tempquestionlist.add(questionEntity);
                 }
+                System.out.println(tempquestionlist.get(i).getQuestionId());
             }
 
             for (int i = 0;i<questionEntityList.size();i++)
             {
                 questionresult = questionService.addQuestion(questionEntityList.get(i));
 
-                System.out.println(questionEntityList.get(i).getQuestionId());
-
                 for (int j = 0;j<optionEntityList.size(); j++) {
-                    if (optionEntityList.get(j).getQuestionid()
-                            == tempquestionlist.get(i).getQuestionId()){
+
+                    System.out.println(tempquestionlist.get(i).getQuestionId());
+
+                    if (optionEntityList.get(j).getQuestionid().equals(tempquestionlist.get(i).getQuestionId())){
+
+                        System.out.println(j);
 
                         optionEntityList.get(j).setQuestionid(questionEntityList.get(i).getQuestionId());
 
@@ -86,7 +106,7 @@ public class QuestionnaireController {
 
 
     @RequestMapping(value = "/insertQuestionnaire",method = RequestMethod.POST,headers = "Accept=application/json")
-    public HttpResponseEntity insertQuestionnaire (@RequestBody QuestionnaireEntity questionnaireEntity, @RequestBody OptionEntity optionEntity){
+    public HttpResponseEntity insertQuestionnaire (@RequestBody QuestionnaireEntity questionnaireEntity){
         HttpResponseEntity httpResponseEntity = new HttpResponseEntity();
         try {
 

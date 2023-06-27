@@ -1,9 +1,12 @@
 package com.example.demo1.dao.entity;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.io.Serializable;
 import java.util.List;
 
 public class QuestionsAndOptionsEntity implements Serializable {
+
 
     private List<QuestionEntity> questionEntityList;
 

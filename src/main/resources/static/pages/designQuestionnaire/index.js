@@ -1,6 +1,6 @@
 let questionnaireTitle = '问卷标题'
 let questionnaireDescription = '问卷说明'
-const problem = []
+
 const questionCounter  = {
     singleChoice: 0,
     multipleChoice: 0,
@@ -9,6 +9,8 @@ const questionCounter  = {
     gauge: 0
 }
 
+
+const problem = []
 /**
  * 添加问题
  * 
@@ -36,9 +38,10 @@ const onAddQuestion = (type) => {
       break;
   }
   $('#problem').append(ele)
-  problem.push({ problemName: '', mustAnswer: true, option: [{}] })
+  problem.push({ problemName: '', mustAnswer: true,type: type, option: [{}] })
 
   $(".question").hover(() => {
+    // 获取索引号
     let problemIndex = $('.question:hover').attr('data-problemIndex')
     let ele = `
       <div class="operation">
@@ -51,8 +54,8 @@ const onAddQuestion = (type) => {
     $('.question:hover').append(ele)
     $(".question:hover").css('border', '1px solid #fdb553')
   }, () => {
-    $('.question > .operation').remove()
-    $(".question").css('border', '1px solid #ffffff')
+  $('.question > .operation').remove()
+  $(".question").css('border', '1px solid #ffffff')
   })
 }
 
@@ -500,15 +503,42 @@ const handleModifyTitle = () => {
   $('#questionnaireDescription').val(questionnaireDescription)
 }
 
+class question {
+  constructor(questionId, questionnaireId, questionType, QuestionTypeName) {
+    this.questionId = questionId
+    this.questionnaireId = questionnaireId
+    this.questionType = questionType
+    this.questionTypeName = QuestionTypeName
+  }
+}
+
+class option {
+  constructor(id, questionid, optionContent) {
+    this.optionId = id
+    this.questionid = questionid
+    this.optionContent = optionContent
+  }
+}
 
 const handleEditFinish = () => {
-  let params = {}
+  let questions = []
+  let options = []
+  problem.forEach(function (item, index) {
+      questions.push(new question(index, localStorage.getItem("questionnaireId"), item.type, item.problemName))
+      item.option.forEach(function (optionItem, optionIndex) {
+          options.push(new option(0, index, optionItem.chooseTerm))
+      })
+  })
+  let params = {questionEntityList:questions, optionEntityList:options}
+  console.log(params)
+
+
   $.ajax({
-    url: API_BASE_URL + '/modifyQuestionnaire',
+    url: 'http://127.0.0.1:8085' + '/modifyQuestionnaire',
     type: "POST",
     data: JSON.stringify(params),
     dataType: "json",
-    contentType: "application/jsoresn",
+    contentType: "application/json",
     success(res) {
       console.log(res)
     }
