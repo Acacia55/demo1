@@ -27,21 +27,21 @@
         question qs
     WHERE
         pj.id=#{id,jdbcType=VARCHAR}
-    AND pj.id=qn.projectId
+    AND pj.project_name=qn.projectName
     AND qs.questionnaireId=qn.id
     AND op.questionid=qs.questionId
     AND an.optionid=op.id
+    GROUP BY an.answertime;
   </select>
 
-    <select id="seeQuestionnaire" resultType="java.util.Map">
+    <select id="seeQuestionnaire" resultType="com.example.demo1.dao.entity.QuestionsAndOptionsEntity">
         SELECT
             qn.questionnaireName,
             qn.content,
             an.username,
             qs.questionTypeName,
             op.optionContent,
-            an.optionid,
-            an.username
+            an.optionid
         From
             questionnaire qn,
             question qs,
@@ -54,4 +54,12 @@
         AND an.optionid=op.id
     </select>
 
+    <select id="queryQuestionnaireById" resultType="com.example.demo1.dao.entity.QuestionnaireEntity">
+        SELECT
+            *
+        FROM
+            questionnaire
+        WHERE
+            id=#{id,jdbcType=VARCHAR}
+    </select>
 </mapper>

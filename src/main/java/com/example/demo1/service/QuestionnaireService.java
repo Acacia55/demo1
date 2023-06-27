@@ -2,6 +2,7 @@ package com.example.demo1.service;
 
 import com.example.demo1.common.util.UUIDUtil;
 import com.example.demo1.dao.QuestionnaireEntityMapper;
+import com.example.demo1.dao.entity.OptionsAndAnswersEntity;
 import com.example.demo1.dao.entity.ProjectEntity;
 import com.example.demo1.dao.entity.QuestionnaireEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +34,13 @@ public class QuestionnaireService {
         return questionnaireEntityMapper.queryQuestionnaireList(projectEntity);
     }
 
-    public List<Map<String, Object>> seeQuestionnaire(QuestionnaireEntity questionnaireEntity){
+    public OptionsAndAnswersEntity seeQuestionnaire(QuestionnaireEntity questionnaireEntity){
 
         return questionnaireEntityMapper.seeQuestionnaire(questionnaireEntity);
+    }
+
+    public QuestionnaireEntity queryQuestionnaireById(String questionnaireId){
+        return questionnaireEntityMapper.queryQuestionnaireById(questionnaireId);
     }
 
 

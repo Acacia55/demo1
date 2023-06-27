@@ -8,6 +8,7 @@ import com.example.demo1.dao.entity.QuestionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -28,4 +29,7 @@ public class OptionService {
         return addResult;
     }
 
+    public List<OptionEntity> getOptionByQuestionId(String questionId){
+        return optionEntityMapper.getOptionByQuestionId(questionId);
+    }
 }
