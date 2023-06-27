@@ -23,8 +23,8 @@ onload = () => {
       // 如果code为201，说明是查看答卷，因此要渲染答案,并且不显示提交按钮
       if (res.code == 201) {
         problemArray.forEach((problem, problemIndex) => {
-          problem.options.forEach((option, optionIndex) => {
-            let i = document.getElementById(option.id)
+          problem.answers.forEach((option, optionIndex) => {
+            let i = document.getElementById(option.optionid)
             i = $(i)
             i.prop('checked', 'checked')
           })
@@ -62,11 +62,9 @@ onload = () => {
         })
         // 发送ajax
         $.ajax({
-            url: 'http://localhost:8085' + '/submitAnswers',
+            url: 'http://localhost:8085' + '/addAnswers',
             type: 'post',
-            data: JSON.stringify({
-                answers: answerArray
-            }),
+            data: JSON.stringify(answerArray),
             dataType: 'json',
             contentType: 'application/json',
             success: (res) => {

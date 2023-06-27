@@ -258,7 +258,7 @@ public class QuestionnaireController {
         }
         else {
             httpResponseEntity.setCode("666");
-            httpResponseEntity.setData(addresult);
+            httpResponseEntity.setData(200);
             httpResponseEntity.setMessage("添加答案成功");
         }
         return httpResponseEntity;

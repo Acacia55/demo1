@@ -1,6 +1,5 @@
 package com.example.demo1.dao;
 
-import com.example.demo1.dao.entity.OptionsAndAnswersEntity;
 import com.example.demo1.dao.entity.ProjectEntity;
 import com.example.demo1.dao.entity.QuestionnaireEntity;
 import org.apache.ibatis.annotations.Mapper;

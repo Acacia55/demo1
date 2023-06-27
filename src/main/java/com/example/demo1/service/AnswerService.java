@@ -1,5 +1,6 @@
 package com.example.demo1.service;
 
+import com.example.demo1.common.util.UUIDUtil;
 import com.example.demo1.dao.AnswerEntityMapper;
 import com.example.demo1.dao.entity.AnswerEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ public class AnswerService {
     }
 
     public int insert(AnswerEntity answerEntity){
+
+        answerEntity.setId(UUIDUtil.getOneUUID());
+
         int result=answerEntityMapper.insert(answerEntity);
 
         if (result != 0){
